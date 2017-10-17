@@ -1,15 +1,17 @@
 
-
-		 ____________________________________
-		|		By: Shannon Williams,		 |
-	____|      A Collection of Computer		 |_____
-	\	|		  Graphics projects.		 |	  /
-	/	|____________________________________|	  \				
-   /_______________________________________________\
-
+By: Shannon Williams, 
+A Collection of Computer
+Graphics projects.
 
 Email: Williamsshannonj@gmail.com
 
+
+v 0.1 :
+
+- Inital project framework creation.
+- Added math object for multiplying and creating rotation matrixes (for X,Y,Z axis), identity, translation, scaling, and shearing.
+- Able to import simple .OBJ file. Only able to pull the vertices and vertice indexes.
+- Can perform basic transformations on the loaded object, plus a perspective view control
 
 v 0.1 :
 
