@@ -19,3 +19,8 @@ v 0.1 :
 - Added math object for multiplying and creating rotation matrixes (for X,Y,Z axis), identity, translation, scaling, and shearing.
 - Able to import simple .OBJ file. Only able to pull the vertices and vertice indexes.
 - Can perform basic transformations on the loaded object, plus a perspective view control
+
+
+Known Issues:
+
+- When loading an object into the scene, it will be drawn in the same position as any previously loaded objects.
