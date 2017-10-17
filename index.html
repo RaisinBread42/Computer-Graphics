@@ -1,0 +1,130 @@
+<!doctype HTML>
+<html>
+<head>
+	<title>Shannon W - MidTerm Project</title>
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+</head>
+<body>
+
+	<div class="row" style="height: 100%;">
+	<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+	
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<h3>GUI Controls</h3>
+		
+		<div class="form-group">
+			<label for="fileloader"> Upload .Obj</label>
+		<input type="file" id="objectfile" name="files"/>
+		</div>
+
+		<h3> Transform </h3>
+		<div class="form-group">
+			<label> X Position: <span id="xposlabel"></span></label>
+  			<input type="range"   step="0.0001" min="-1" max="1" value="0" id="xlocalpos" oninput="updateXTranslate()">
+		</div>
+
+		<div class="form-group">
+			<label> Y Position: <span id="yposlabel"></span></label>
+  			<input type="range"   step="0.0001" min="-1" max="1" value="0" id="ylocalpos" oninput="updateYTranslate()">
+		</div>
+		<div class="form-group">
+			<label> Z Position: <span id="zposlabel"></span></label>
+  			<input type="range"   step="0.0001" min="-10" max="-1" value="-1" id="zlocalpos" oninput="updateZTranslate()">
+		</div>
+<hr/>
+		<div class="form-group">
+			<label> X Scaling: <span id="xscalelabel"></span></label>
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="1" id="xlocalscale" oninput="updateXScale()">
+		</div>
+
+		<div class="form-group">
+			<label> Y Scaling: <span id="yscalelabel"></span></label>
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="1" id="ylocalscale" oninput="updateYScale()">
+		</div>
+		<div class="form-group">
+			<label> Z Scaling: <span id="zscalelabel"></span></label>
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="1" id="zlocalscale" oninput="updateZScale()">
+		</div>
+<hr/>
+
+		<div class="form-group">
+			<label> X Rotation: <span id="xrotlabel"></span></label>
+  			<input type="range"  step="0.0001" min="0" max="6.285" value="0" id="xlocalrotation" oninput="updateXRotation()">
+		</div>
+
+		<div class="form-group">
+			<label> Y Rotation: <span id="yrotlabel"></span></label>
+  			<input type="range"  step="0.0001" min="0" max="6.285" value="0" id="ylocalrotation" oninput="updateYRotation()">
+		</div>
+		<div class="form-group">
+			<label> Z Rotation:</label>
+			<span id="zrotlabel"></span>
+  			<input type="range"  step="0.0001" min="0" max="6.285" value="0" id="zlocalrotation" oninput="updateZRotation()">
+		</div>
+
+		<h3>View Controls</h3>
+		
+		<div class="form-group">
+			<label> Perspective</label>
+			<span id="perspectiveviewlabel"></span>
+		<input type="range" name="files" step="0.0001" min="0.1" max="0.95" value="0.1" id="perspectiveviewvalue" oninput="updateperspective()" />
+		</div>
+
+
+	</div> <!-- End of controls section -->
+
+	</div>
+
+</div> <!-- End of controls column-->
+
+<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" id="canvascontainer">
+	<canvas id="canvas"></canvas>
+</div> <!--End of canvas column -->
+
+</div>
+
+
+<!-- Loading necesary scripts-->
+<div w3-include-html="pagescripts.html"> </div>
+
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://www.w3schools.com/lib/w3.js"></script>
+<script src="./math.js"></script>
+<script src="./SceneManager.js"></script>
+<script  src="./shader.js"></script>
+<script  src="./controls.js"></script>
+<script  src="./main.js"></script>
+
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+
+  		var canvas = document.querySelector("#canvas");
+		var gl = canvas.getContext('webgl');
+ 
+ 		 if (!gl) { return; }
+
+		// presets for page
+		//w3.includeHTML(); --> getting XML Parsing Error: junk after document element Location: file:///Users/shannon/localwebserver/Locomotion/pagescripts.html Line Number 2, Column 1:
+		resizeCanvas(gl);
+
+		InitializeWindow(gl);
+		
+	});
+
+function resizeCanvas(gl){
+
+	var c = document.getElementById('canvascontainer');
+    
+	// setting the width to 100% in css seems to work best at the moment.
+    //gl.canvas.width = c.offsetWidth;
+	//gl.canvas.height = window.innerHeight;
+}
+
+</script>
