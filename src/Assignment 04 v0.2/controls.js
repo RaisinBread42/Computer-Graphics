@@ -123,19 +123,16 @@ document.getElementById("perspectiveviewlabel").textContent = pv;
 function updateXTranslate (){
   ControlManager.ctx = document.getElementById("xlocalpos").value;
   document.getElementById("xposlabel").textContent = ControlManager.ctx;
-
 }
 
 function updateYTranslate (){
   ControlManager.cty = document.getElementById("ylocalpos").value;
   document.getElementById("yposlabel").textContent = ControlManager.cty;
-
 }
 
 function updateZTranslate (){
   ControlManager.ctz = document.getElementById("zlocalpos").value;
   document.getElementById("zposlabel").textContent = ControlManager.ctz;
-
 }
 
 function updateXScale (){
@@ -172,8 +169,6 @@ function updateAmbientColor(){
   let values = document.getElementById("ambientvalue").value.match(/[A-Za-z0-9]{2}/g);
   values = values.map(function(v) { return parseInt(v, 16)/255; });
   SceneManager.AmbientLight = values;
-  console.log(values);
-
 }
 
 function updateDirLight(){

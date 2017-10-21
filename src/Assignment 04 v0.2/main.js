@@ -45,7 +45,7 @@ function MainLoop(gl, shaderprogram){
 
     // compute transformations
     let matrix = TransformModelMatrix();
-    BufferVertexPosition(gl, positionLocation); // bind vertex position buffer
+    BufferVertexPosition(gl, el, positionLocation); // bind vertex position buffer
     
     gl.uniformMatrix4fv(matrixLocation, false, matrix); // set the matrixLocation let to matrix
 

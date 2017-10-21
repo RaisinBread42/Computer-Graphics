@@ -19,18 +19,6 @@ SetDirLightPosition: function(arr){
 this.DirectionLightPosition = arr;
 },
 
-Obj: function(){
-
-return {
-isActive: true,
-isSelected:false,
-vertices: new Array(),
-verticeNormals: new Array(),
-verticeIndexes :new Array(),
-verticenormals: new Array()
-};
-},
-
 InitializeVariables: function(){
 
   ControlManager.ctx = document.getElementById("xlocalpos").value;

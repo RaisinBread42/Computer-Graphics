@@ -40,7 +40,7 @@
 		</div>
 		<div class="form-group">
 			<label> Z Position: <span id="zposlabel"></span></label>
-  			<input type="range"   step="0.0001" min="-1" max="10" value="-1" id="zlocalpos" oninput="updateZTranslate()">
+  			<input type="range"   step="0.0001" min="-1" max="1" value="-0.5" id="zlocalpos" oninput="updateZTranslate()">
 		</div>
 <hr/>
 		<div class="form-group">
@@ -120,7 +120,7 @@
 </div> <!-- End of controls column-->
 
 <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" id="canvascontainer">
-	<canvas id="canvas"></canvas>
+	<canvas id="canvas" width="1600" height="900"></canvas>
 </div> <!--End of canvas column -->
 
 </div>
