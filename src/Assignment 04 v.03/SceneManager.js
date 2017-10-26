@@ -35,7 +35,7 @@ InitializeVariables: function(){
 var i;
 while( i=0 < this.SelectedObjects.length){
 
-	var o=SelectedObjects[i];
+	let o = this.SelectedObjects[i];
 
   	o.tx = ControlManager.ctx; o.ty = ControlManager.cty; o.tz = ControlManager.ctz;
   	o.sx = ControlManager.csx; o.sy = ControlManager.csy; o.sz = ControlManager.csz;
@@ -46,7 +46,7 @@ while( i=0 < this.SelectedObjects.length){
 
 LoadObject: function(verts, vindexes, vnormals, textcoords){
 
-var o = {
+let o = {
 vertices : verts,
 verticeIndexes: vindexes,
 verticenormals: vnormals,

@@ -15,14 +15,14 @@
 		<h3>GUI Controls</h3>
 
 		<!-- Upload Object to view -->
-		<a class="btn btn-info" data-toggle="collapse" data-target="#Upload" style="min-width:100%; display: inline-block;">Upload Object</a>
+<!-- 		<a class="btn btn-info" data-toggle="collapse" data-target="#Upload" style="min-width:100%; display: inline-block;">Upload Object</a>
 		
 		<div class="collapse pre-scrollable" id="Upload">
 		<div class="form-group">
 			<label > Upload .Obj</label>
 		<input type="file" id="objectfile" name="files"/>
 		</div>
-		</div>
+		</div> -->
 
 		<!-- Transform Objects -->
 		<a class="btn btn-info" data-toggle="collapse" href="#Transforms" style="min-width:100%; display: inline-block;">Transforms</a>
@@ -45,16 +45,16 @@
 <hr/>
 		<div class="form-group">
 			<label> X Scaling: <span id="xscalelabel"></span></label>
-  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.5" id="xlocalscale" oninput="updateXScale()">
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.2" id="xlocalscale" oninput="updateXScale()">
 		</div>
 
 		<div class="form-group">
 			<label> Y Scaling: <span id="yscalelabel"></span></label>
-  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.5" id="ylocalscale" oninput="updateYScale()">
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.2" id="ylocalscale" oninput="updateYScale()">
 		</div>
 		<div class="form-group">
 			<label> Z Scaling: <span id="zscalelabel"></span></label>
-  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.5" id="zlocalscale" oninput="updateZScale()">
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.2" id="zlocalscale" oninput="updateZScale()">
 		</div>
 <hr/>
 
@@ -65,7 +65,7 @@
 
 		<div class="form-group">
 			<label> Y Rotation: <span id="yrotlabel"></span></label>
-  			<input type="range"  step="0.0001" min="0" max="6.285" value="0" id="ylocalrotation" oninput="updateYRotation()">
+  			<input type="range"  step="0.0001" min="0" max="6.285" value="3.80" id="ylocalrotation" oninput="updateYRotation()">
 		</div>
 		<div class="form-group">
 			<label> Z Rotation:</label>

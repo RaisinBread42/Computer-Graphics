@@ -2,7 +2,7 @@
 $(document).ready(function(){
 
 	// Add event listeners
-	document.getElementById('objectfile').addEventListener('change',handlefilechanged,false);
+	//document.getElementById('objectfile').addEventListener('change',handlefilechanged,false);
 
 
 function handlefilechanged(evt){
@@ -22,64 +22,6 @@ function handlefilechanged(evt){
 	reader.readAsText(file,'UTF-8');
 
 }
-
-/* Functions for reading the file uploaded */
-function LoadNewObject(contents){
-
-// arrays that hold vertex attribute information
-  var arr = contents.split("\n");
-  var verticeindexes = new Array();
-  var vertices = new Array();
-  var verticenormals = new Array();
-  var texturecoords = new Array();
-  var texturecoordsindexes = new Array();
-// variables for use only to temporarily store information
-  var i=0;
-  var tempverts = new Array();
-  var tempnormalsindexes= new Array();
-  var tempnormals= new Array();
-  var temptexturecoords = new Array();
-
-  while(i < arr.length){
-    var line = arr[i].split(" ");
-    
-    if(line[0] == "v")
-      tempverts.push( new Array( parseFloat(line[1]), parseFloat(line[2]), parseFloat(line[3]) ));
-
-    if (line[0] == "vn")
-      tempnormals.push( new Array( parseFloat(line[1]), parseFloat(line[2]), parseFloat(line[3]) ));
-
-    if(line[0] == "vt")
-      temptexturecoords.push( new Array( parseFloat(line[1]), parseFloat(line[2]) ));
-
-    if( line[0] == "f"){
-      console.log(line[0].split("/")[0]);
-      verticeindexes.push(parseFloat(line[1].split("/")[0]), parseFloat(line[2].split("/")[0]), parseFloat(line[3].split("/")[0]) );
-      texturecoordsindexes.push(parseFloat(line[1].split("/")[1]), parseFloat(line[2].split("/")[1]), parseFloat(line[3].split("/")[1]));
-      tempnormalsindexes.push(parseFloat(line[1].split("/")[2]),parseFloat(line[2].split("/")[2]),parseFloat(line[3].split("/")[2]));
-    }    
-    i++;
-    }
-
-// add vertices and vertex normals to main vertex arrays
-i=0;
-while( i < verticeindexes.length){
-
-  var index = verticeindexes[i];
-  var normalindex = tempnormalsindexes[i];
-  var textureindex = texturecoordsindexes[i];
-
-  vertices.push( tempverts[index - 1][0],tempverts[index - 1][1],tempverts[index- 1][2]);
-  texturecoords.push(temptexturecoords[textureindex - 1][0],temptexturecoords[textureindex - 1][1]);
-  verticenormals.push(tempnormals[normalindex - 1][0],tempnormals[normalindex - 1][1],tempnormals[normalindex- 1][2]);
-
-i++;
-}
-
-SceneManager.LoadObject(vertices, verticeindexes, verticenormals, texturecoords);
-
-}
-
 
 function clearBufferAttributes(){
   //clear all buffers
@@ -194,3 +136,63 @@ arr[2]= arr[2]/mag;
 
 return arr;
 }
+
+
+/* Function for reading the file uploaded */
+function LoadNewObject(contents){
+
+// arrays that hold vertex attribute information
+  var arr = contents.split("\n");
+  console.log(arr);
+  var verticeindexes = new Array();
+  var vertices = new Array();
+  var verticenormals = new Array();
+  var texturecoords = new Array();
+  var texturecoordsindexes = new Array();
+// variables for use only to temporarily store information
+  var i=0;
+  var tempverts = new Array();
+  var tempnormalsindexes= new Array();
+  var tempnormals= new Array();
+  var temptexturecoords = new Array();
+
+  while(i < arr.length){
+    var line = arr[i].split(" ");
+    
+    if(line[0] == "v")
+      tempverts.push( new Array( parseFloat(line[1]), parseFloat(line[2]), parseFloat(line[3]) ));
+
+    if (line[0] == "vn")
+      tempnormals.push( new Array( parseFloat(line[1]), parseFloat(line[2]), parseFloat(line[3]) ));
+
+    if(line[0] == "vt")
+      temptexturecoords.push( new Array( parseFloat(line[1]), parseFloat(line[2]) ));
+
+    if( line[0] == "f"){
+      console.log(line[0].split("/")[0]);
+      verticeindexes.push(parseFloat(line[1].split("/")[0]), parseFloat(line[2].split("/")[0]), parseFloat(line[3].split("/")[0]) );
+      texturecoordsindexes.push(parseFloat(line[1].split("/")[1]), parseFloat(line[2].split("/")[1]), parseFloat(line[3].split("/")[1]));
+      tempnormalsindexes.push(parseFloat(line[1].split("/")[2]),parseFloat(line[2].split("/")[2]),parseFloat(line[3].split("/")[2]));
+    }    
+    i++;
+    }
+
+// add vertices and vertex normals to main vertex arrays
+i=0;
+while( i < verticeindexes.length){
+
+  var index = verticeindexes[i];
+  var normalindex = tempnormalsindexes[i];
+  var textureindex = texturecoordsindexes[i];
+
+  vertices.push( tempverts[index - 1][0],tempverts[index - 1][1],tempverts[index- 1][2]);
+  texturecoords.push(temptexturecoords[textureindex - 1][0],temptexturecoords[textureindex - 1][1]);
+  verticenormals.push(tempnormals[normalindex - 1][0],tempnormals[normalindex - 1][1],tempnormals[normalindex- 1][2]);
+
+i++;
+}
+
+SceneManager.LoadObject(vertices, verticeindexes, verticenormals, texturecoords);
+
+}
+
