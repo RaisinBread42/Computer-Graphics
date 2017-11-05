@@ -60,28 +60,38 @@
 
 		<div class="form-group">
 			<label> X Rotation: <span id="xrotlabel"></span></label>
-  			<input type="range"  step="0.0001" min="0" max="6.285" value="0" id="xlocalrotation" oninput="updateXRotation()">
+  			<input type="range"  step="0.0001" min="0" max="360" value="330" id="xlocalrotation" oninput="sliderUpdateXRotation()">
 		</div>
 
 		<div class="form-group">
 			<label> Y Rotation: <span id="yrotlabel"></span></label>
-  			<input type="range"  step="0.0001" min="0" max="6.285" value="3.80" id="ylocalrotation" oninput="updateYRotation()">
+  			<input type="range"  step="0.0001" min="0" max="360" value="160" id="ylocalrotation" oninput="sliderUpdateYRotation()">
 		</div>
 		<div class="form-group">
 			<label> Z Rotation:</label>
 			<span id="zrotlabel"></span>
-  			<input type="range"  step="0.0001" min="0" max="6.285" value="0" id="zlocalrotation" oninput="updateZRotation()">
+  			<input type="range"  step="0.0001" min="0" max="360" value="0" id="zlocalrotation" oninput="updateZRotation()">
 		</div>
 		</div>
 <!-- Camera Controls -->
 <a class="btn btn-info" data-toggle="collapse" data-target="#cameraview" style="min-width:100%; display: inline-block;">Camera View</a>
 <div class="collapse pre-scrollable" id="cameraview">
-			<h3> Camera Controls</h3>
+			<h3> Perspective View </h3>
 
 		<div class="form-group">
-			<label> Object Perspective</label>
-			<span id="perspectiveviewlabel"></span>
-		<input type="range" name="files" step="0.0001" min="0" max="0.9" value="0" id="perspectiveviewvalue" oninput="updateperspective()" />
+			<label> Angle</label>
+			<span id="panglelabel"></span>
+		<input type="range" name="files" step="0.0001" min="0" max="180" value="90" id="panglevalue" oninput="updateperspective()" />
+		</div>
+		<div class="form-group">
+			<label> Z Near</label>
+			<span id="pznearlabel"></span>
+		<input type="range" name="files" step="0.0001" min="0.1" max="10" value="0.1" id="pznearvalue" oninput="updateperspective()" />
+		</div>
+		<div class="form-group">
+			<label> Z Far</label>
+			<span id="pzfarlabel"></span>
+		<input type="range" name="files" step="0.0001" min="1" max="2000" value="100" id="pzfarvalue" oninput="updateperspective()" />
 		</div>
 	</div>
 

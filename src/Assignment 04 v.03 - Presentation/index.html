@@ -1,0 +1,290 @@
+<!doctype HTML>
+<html>
+<head>
+	<title>Shannon W - 2D-3D Transformations</title>
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+	<script type="text/javascript" async
+	  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML">
+	</script>
+	<script type="text/x-mathjax-config">
+	  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+	</script>
+</head>
+<body>
+
+	<div class="row" style="height: 100%;">
+	<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" >
+
+	<div class="row">
+		<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+			<p><strong>"Simple 2D-3D Transformations"</strong></p>
+				<p>Shannon Williams<br/><strong>CISC 400: Computer Graphics</strong></p>
+				<a data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-exclamation-sign">Math</span></a>
+			<hr/>
+
+		<!-- Upload Object to view -->
+<!-- 		<a class="btn btn-info" data-toggle="collapse" data-target="#Upload" style="min-width:100%; display: inline-block;">Upload Object</a>
+
+		<div class="collapse pre-scrollable" id="Upload">
+		<div class="form-group">
+			<label > Upload .Obj</label>
+		<input type="file" id="objectfile" name="files"/>
+		</div>
+		</div> -->
+
+		<!-- Transform Objects -->
+		<a class="btn btn-info" data-toggle="collapse" href="#Transforms" style="min-width:100%; display: inline-block; font-size:20px;">Transformations</a>
+		<div class="collapse pre-scrollable" id="Transforms" style="padding: 15px 20px;">
+
+			<a class="btn btn-primary " data-toggle="collapse" href="#translate" style="min-width:100%;display: inline-block;">Translation</a>
+<div class="collapse"  data-toggle="collapse"  id="translate">
+		<div class="form-group">
+			<label> X Position: <span id="xposlabel"></span></label>
+  			<input type="range"   step="0.0001" min="-1" max="1" value="0" id="xlocalpos" oninput="updateXTranslate()">
+		</div>
+
+		<div class="form-group">
+			<label> Y Position: <span id="yposlabel"></span></label>
+  			<input type="range"   step="0.0001" min="-1" max="1" value="0" id="ylocalpos" oninput="updateYTranslate()">
+		</div>
+		<div class="form-group">
+			<label> Z Position: <span id="zposlabel"></span></label>
+  			<input type="range"   step="0.0001" min="-1" max="1" value="0" id="zlocalpos" oninput="updateZTranslate()">
+		</div>
+	</div>
+<br/>
+	<a class="btn btn-primary" data-toggle="collapse" href="#scale" style="min-width:100%;display: inline-block;">Scale</a>
+<div class="collapse"  data-toggle="collapse"  id="scale">
+		<div class="form-group">
+			<label> X Scaling: <span id="xscalelabel"></span></label>
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.2" id="xlocalscale" oninput="updateXScale()">
+		</div>
+
+		<div class="form-group">
+			<label> Y Scaling: <span id="yscalelabel"></span></label>
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.2" id="ylocalscale" oninput="updateYScale()">
+		</div>
+		<div class="form-group">
+			<label> Z Scaling: <span id="zscalelabel"></span></label>
+  			<input type="range"   step="0.0001" min="0.1" max="1" value="0.2" id="zlocalscale" oninput="updateZScale()">
+		</div>
+	</div>
+	<br/>
+
+<a class="btn btn-primary " data-toggle="collapse" href="#shear" style="min-width:100%;display: inline-block;">Shear</a>
+<div class="collapse"  data-toggle="collapse"  id="shear">
+<div class="form-group">
+	<label> X Shear: <span id="xshearlabel"></span></label>
+		<input type="range"   step="0.0001" min="0" max="1" value="0" id="xlocalshear" oninput="updateXShear()">
+</div>
+
+<div class="form-group">
+	<label> Y Shear: <span id="yshearlabel"></span></label>
+		<input type="range"   step="0.0001" min="0" max="1" value="0" id="ylocalshear" oninput="updateYShear()">
+</div>
+</div>
+<br/>
+
+<a class="btn btn-primary" data-toggle="collapse" href="#rotation" style="min-width:100%;display: inline-block;">Rotation</a>
+<div class="collapse" data-toggle="collapse"  id="rotation">
+		<div class="form-group">
+			<label> X Rotation: <span id="xrotlabel"></span></label>
+			<input type="range"  step="0.01" min="0" max="360" value="0" id="xlocalrotation" oninput="sliderUpdateXRotation()">
+		</div>
+
+		<div class="form-group">
+			<label> Y Rotation: <span id="yrotlabel"></span></label>
+			<input type="range"  step="0.01" min="0" max="360" value="0" id="ylocalrotation" oninput="sliderUpdateYRotation()">
+		</div>
+		<div class="form-group">
+			<label> Z Rotation:
+			<span id="zrotlabel"></span></label>
+			<input type="range"  step="0.01" min="0" max="360" value="0" id="zlocalrotation" oninput="updateZRotation()">
+		</div>
+	</div>
+
+		</div>
+		<hr/>
+<!-- Camera Controls -->
+<a class="btn btn-info" data-toggle="collapse" data-target="#cameraview" style="min-width:100%; display: inline-block; font-size:20px;">Camera View</a>
+<div class="collapse pre-scrollable" id="cameraview" style="padding: 15px 20px;">
+
+	<a class="btn btn-primary" data-toggle="collapse" href="#perspective" style="min-width:100%;display: inline-block;">User Perspective</a>
+<div class="collapse"  data-toggle="collapse"  id="perspective">
+
+		<div class="form-group">
+			<label> Perspective Factor:</label>
+			<span id="perspectiveviewlabel"></span>
+		<input type="range" name="files" step="0.0001" min="0" max="0.9" value="0" id="perspectiveviewvalue" oninput="updateperspective()" />
+		</div>
+	</div>
+
+	</div>
+<hr/>
+<!-- Lighting Controls -->
+		<a class="btn btn-info" data-toggle="collapse" data-target="#Lighting" style="min-width:100%; display: inline-block; font-size: 20px;">Scene Lighting</a>
+		<div class="collapse pre-scrollable" id="Lighting" style="padding: 15px 20px;">
+			<br>
+			<div class="form-group">
+				<label for="color">Ambient Light</label>
+				<input type="color" id="ambientvalue" onchange="updateAmbientColor()">
+			</div>
+
+		<div class="form-group">
+			<h3>Directional Light</h3>
+			<label>X: <span id="dirlightlabelx"></span></label>
+  			<input type="range"  step="0.0001" min="-1" max="1" value="0.85" id="dirlightx" oninput="updateDirLight()">
+		</div>
+
+		<div class="form-group">
+			<label>Y: <span id="dirlightlabely"></span></label>
+  			<input type="range"  step="0.0001" min="-1" max="1" value="0.2" id="dirlighty" oninput="updateDirLight()">
+		</div>
+		<div class="form-group">
+			<label>Z:</label>
+			<span id="dirlightlabelz"></span>
+  			<input type="range"  step="0.0001" min="-1" max="1" value="-1" id="dirlightz" oninput="updateDirLight()">
+		</div>
+
+		</div>
+
+	</div> <!-- End of controls section -->
+
+	</div>
+
+</div> <!-- End of controls column-->
+
+<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" id="canvascontainer">
+	<canvas id="canvas" width="1600" height="900"></canvas>
+</div> <!--End of canvas column -->
+
+</div>
+
+<!-- Loading necesary scripts-->
+<div w3-include-html="pagescripts.html"> </div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Transformation Matrices in OpenGL</h4>
+      </div>
+      <div class="modal-body" style="text-align:justify;">
+				<p >To achieve transformations, OpenGL needs to represent each vertice as column-major matrix $V$: $$\begin{bmatrix} x\\y\\z\\w=1\\ \end{bmatrix}$$ This is done so that 4x4 column-major transformation matrices can be applied.
+				The order for applying these transformations matters, $TRS \neq TSR$. This demonstration uses $ TRS = M $, where $M$, the model view matrix (world position), combines the transformation, rotation, and scale matrixes into one before sending to OpenGL. The matrices are then multiplied in a column-by-column order. This means row-major matrices need to be transposed before sending. Lastly, all transformations are multiplied from right to left, ie: $M*V = T*R*S*V $ is done by multiplying $V$ by $S$, then $R$, then $T$. To get the projection on to screen coordinates $(x,y)$, OpenGL divides $x,y,z$ by $w$ to get the respective position in 3D space. Lastly, the $x,y$ coordinates are used, and $z$ to represent depth. This depth variable allows for deciding what surfaces and vertices will be visible in 2D space.</p><p>Below are column-major matrixes used in this demonstration.</p>
+				<ol>
+					<li> Translation: <p> $$
+					\quad
+					\begin{bmatrix}
+					1 & 0 & 0 & 0 \\
+					0 & 1 & 0 & 0 \\
+					0 & 0 & 1 & 0 \\
+					Tx & Ty & Tz & 1 \\
+					\end{bmatrix}
+					$$</p></li>
+
+					<li> Scale: <p> $$
+					\quad
+					\begin{bmatrix}
+					Sx & 0 & 0 & 0 \\
+					0 & Sy & 0 & 0 \\
+					0 & 0 & Sz & 0 \\
+					0 & 0 & 0 & 1 \\
+					\end{bmatrix}
+					$$</p></li>
+					<li> Shear: <p> $$
+					\quad
+					\begin{bmatrix}
+					1 & sy & 0 & 0 \\
+					sx & 1 & 0 & 0 \\
+					0 & 0 & 1 & 0 \\
+					0 & 0 & 0 & 1 \\
+					\end{bmatrix}
+					$$</p></li>
+					<li> Rotation on X Axis: <p> $$
+					\quad
+					\begin{bmatrix}
+					1 & 0 & 0 & 0 \\
+					0 & \cos\theta & -\sin\theta & 0 \\
+					0 & \sin\theta & \cos\theta & 0 \\
+					0 & 0 & 0 & 1 \\
+					\end{bmatrix}
+					$$</p></li>
+					<li> Rotation on Y Axis: <p> $$
+					\quad
+					\begin{bmatrix}
+					\cos\theta & 0 & \sin\theta & 0 \\
+					0 & 1 & 0 & 0 \\
+					-\sin\theta & 0 & \cos\theta & 0 \\
+					0 & 0 & 0 & 1 \\
+					\end{bmatrix}
+					$$</p></li>
+					<li> Rotation on Z Axis: <p> $$
+					\quad
+					\begin{bmatrix}
+					\cos\theta & \sin\theta & 0 & 0 \\
+					-\sin\theta & \cos\theta & 0 & 0 \\
+					 0 & 0 & 1 & 0 \\
+					 0 & 0 & 0 & 1 \\
+					\end{bmatrix}
+					$$</p></li>
+				</ol>
+				<hr/>
+				<h4>Other Applied Operations</h4>
+				<ul>
+<li> The simple projection is achieved by dividing $x$ and $y$ by $ 1 +Vz * pf$, where $pf$ is the perspective factor and $V$ is the current vertice.</li>
+<li> Directional lighting is performed by giving an initial directional vector $Dv$, computing the dot product with the surface normal $n$ and finally multiplying the result to the RGB color output.</li>
+<li> Ambient Lighting is simply another multiplier which is used on the RGB output. This results in changing the entire color of all objects in the scene.</li>
+</ul>
+			</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://www.w3schools.com/lib/w3.js"></script>
+<script src="./math.js"></script>
+<script src="./SceneManager.js"></script>
+<script  src="./shader.js"></script>
+<script  src="./controls.js"></script>
+<script  src="./main.js"></script>
+
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+
+  		var canvas = document.querySelector("#canvas");
+		var gl = canvas.getContext('webgl');
+
+ 		 if (!gl) { return; }
+
+		// presets for page
+		//w3.includeHTML(); --> getting XML Parsing Error: junk after document element Location: file:///Users/shannon/localwebserver/Locomotion/pagescripts.html Line Number 2, Column 1:
+		resizeCanvas(gl);
+
+		InitializeWindow(gl);
+
+	});
+
+function resizeCanvas(gl){
+
+	var c = document.getElementById('canvascontainer');
+
+	// setting the width to 100% in css seems to work best at the moment.
+    //gl.canvas.width = c.offsetWidth;
+	//gl.canvas.height = window.innerHeight;
+}
+
+</script>
