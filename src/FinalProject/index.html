@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<title> Final Project </title>
+<body onload="loadImage()">
+  <canvas id="canvas" width="128px" height="128px"></canvas>
+  <canvas id="imagecanvas" ></canvas>
+
+<img id="img" alt="dynamic image" />
+
+<script src="perlin.js"> </script>
+<script type="text/javascript">
+
+function loadImage(){
+var canvas = document.getElementById('canvas');
+var canvas2 = document.getElementById('imagecanvas');
+
+var ctx = canvas.getContext('2d');
+var ctx2 = canvas2.getContext('2d');
+
+canvas.clientWidth = canvas.clientHeight = 128;
+ctx2.width = ctx2.height = 128;
+
+
+noise.seed(Math.random());
+
+perlinNoise(canvas, canvas2, ctx, ctx2);
+}
+
+function perlinNoise(canvas, canvas2, ctx,ctx2){
+  //var scale = 1;
+
+  var image  = ctx2.createImageData(128,128);
+
+  for (var x = 0, i=0; x < canvas.clientWidth; x++) {
+    for (var y = 0; y < canvas.clientHeight; y++) {
+      //var number = Math.round( Math.random() % 32768) * 255;
+      var number = Math.round(turbulence(x,y, 256)); // perlin noise (smooth)
+         ctx.fillStyle = "rgba(" + number+ "," + number + "," + number + "," + 1.0 + ")";
+         ctx.fillRect(x,y,1,1);
+
+         image.data[i] = image.data[i+1] = image.data[i+2] = number;
+         image.data[i+3] = 255;
+          i+=4;
+      }
+  }
+
+ctx2.putImageData(image,0,0);
+console.log(canvas2.toDataURL());
+
+document.getElementById("img").src = canvas2.toDataURL();
+}
+
+function turbulence(x,y,isize){
+var value = 0;
+var size = isize;
+  while( size >= 1){
+      value+= noise.simplex2(x/size, y/size) * size;
+      size/=2;
+  }
+  return ( 128 * value / isize);
+}
+
+
+
+</script>
+</body>
+
+</html>
