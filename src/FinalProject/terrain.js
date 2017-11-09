@@ -27,10 +27,9 @@ function createWorld() {
     scene.add(viewpointLight);
 
     /*_________________________________Setting up Terrain_______________________________ */
-    plane = new THREE.PlaneGeometry( 100, 100, size, size );
+    plane = new THREE.PlaneGeometry( 70, 70, size-1, size-1 );
 
-
-  	material = new THREE.MeshBasicMaterial( { color: 'blue',  side: THREE.DoubleSide, vertexColors:THREE.FaceColors, wireframe:true} );
+  	material = new THREE.MeshBasicMaterial( { color: 'white',  side: THREE.DoubleSide, wireframe:false} );
 
     plane.computeFaceNormals();
     terrain = new THREE.Mesh( plane, material );
@@ -58,7 +57,7 @@ box.open();
 function render() {
     stats.begin();
     renderer.render(scene, camera);
-    terrain.rotation.z +=0.001;
+    //terrain.rotation.z += 0.001;
     stats.end();
     requestAnimationFrame(render);
 
@@ -73,8 +72,8 @@ function doKey(event) {
     //console.log(code);
     var rotated = true;
     switch( code ) {
-        // case 37:  terrain.rotation.y -= 0.07;    break;    // left arrow
-        // case 39:  terrain.rotation.y += 0.07;    break;    // right arrow
+        case 37:  terrain.rotation.z -= 0.07;    break;    // left arrow
+        case 39:  terrain.rotation.z += 0.07;    break;    // right arrow
         // case 38:  terrain.rotation.x -= 0.07;    break;    // up arrow
         // case 40:  terrain.rotation.x += 0.07;    break;    // down arrow
         // case 33:  terrain.rotation.z -= 0.07;    break;    // page up
@@ -92,25 +91,31 @@ function doKey(event) {
 
 function ApplyPerlinNoise(){
 
+// must also apply image to canvas "imagecanvas"
+var imagecanvas = document.getElementById('noiseimage');
+var ctx = imagecanvas.getContext('2d');
+var image  = ctx.createImageData(128,128);
+imagecanvas.width = imagecanvas.height = 128;
+
  var rand = Math.random();
- var i =0;
-for (var y = 0; y < size; y++) {
-  for (var x = 0; x < size; x++) {
-    i++;
-    var value = 2.5 *turbulence(x*rand,y*rand, 256*2);
-     value = (value > 1) ? 1:value;
-    terrain.geometry.vertices[i].z = value;
+for (var y=0, i=0, pxi=0; y < size; y++) {
+  for (var x=0; x < size; x++, i++, pxi+=4) {
+
+    var value = turbulence(x*rand,y*rand, 256) ;
+     //value = (value > 1) ? 1:value;
+    terrain.geometry.vertices[i].z = 10.5* value;
+
+    setTerrainTexturePixel(value, image, pxi);
+
   }
+ctx.putImageData(image,0,0);
 }
 
-// for (var i = 0; i < terrain.geometry.faces.length; i++) {
-//   terrain.geometry.faces[i].materialIndex = 1;
-//   terrain.geometry.faces[i].color.setRGB();
-// }
-console.log();
-console.log(terrain.geometry.faces.length);
-
-terrain.geometry.colorsNeedUpdate = true;
+var texture = new THREE.TextureLoader().load(imagecanvas.toDataURL(), function(texture){
+  terrain.material.map = texture;
+  terrain.material.needsUpdate = true;
+});
+//terrain.geometry.colorsNeedUpdate = true;
 terrain.geometry.__dirtyVertices = true;
 terrain.geometry.verticesNeedUpdate = true;
 }
@@ -119,12 +124,44 @@ function turbulence(x,y,isize){
 var value = 0;
 var size = isize;
   while( size >= 1){
-      value+= noise.simplex2(x/size, y/size);
+      value+= Math.abs(noise.perlin2(x/size, y/size));
       size/=2;
   }
   return ( 128 * value / isize);
 }
 
+function setTerrainTexturePixel(color, image, pxi){
+  color = Math.round(color * 255);
+
+  if(color <= 50){ // give DARKER grass color
+
+    image.data[pxi] = 10;
+    image.data[pxi+ 1] = 157;
+    image.data[pxi +2] = 200;
+  }
+  else if( color >= 50 && color <= 100){ // give DARKER grass color
+
+    image.data[pxi] = 1;
+    image.data[pxi+ 1] = 33;
+    image.data[pxi +2] = 22;
+  }
+  else if(color > 100 && color <= 200){ // give grass color
+    image.data[pxi] = 3;
+    image.data[pxi+ 1] = 73;
+    image.data[pxi +2] = 52;
+  }
+  else if (color >200 && color <= 250){ // DIRTY snow
+    image.data[pxi] = 200;
+    image.data[pxi+ 1] = 200;
+    image.data[pxi +2] = 200;
+  }
+  else{ // pure white snow
+    image.data[pxi] = image.data[pxi+1] = image.data[pxi+2] = 255;
+  }
+
+  image.data[pxi+3] = 255;
+
+}
 
 //----------------------------------------------------------------------------------
 
