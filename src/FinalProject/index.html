@@ -2,10 +2,10 @@
 <html>
 <title> Final Project </title>
 <body onload="loadImage()">
-  <canvas id="canvas" width="128px" height="128px"></canvas>
+  <canvas id="canvas" width="600px" height="1600px"></canvas>
   <canvas id="imagecanvas" ></canvas>
 
-<img id="img" alt="dynamic image" />
+<!-- <img id="img" alt="dynamic image" /> -->
 
 <script src="perlin.js"> </script>
 <script type="text/javascript">
@@ -17,37 +17,60 @@ var canvas2 = document.getElementById('imagecanvas');
 var ctx = canvas.getContext('2d');
 var ctx2 = canvas2.getContext('2d');
 
-canvas.clientWidth = canvas.clientHeight = 128;
+canvas.clientWidth = canvas.clientHeight = 600;
 ctx2.width = ctx2.height = 128;
 
 
 noise.seed(Math.random());
 
-perlinNoise(canvas, canvas2, ctx, ctx2);
+perlinNoise(canvas, ctx,);
 }
 
-function perlinNoise(canvas, canvas2, ctx,ctx2){
+function perlinNoise(canvas, ctx){
   //var scale = 1;
 
-  var image  = ctx2.createImageData(128,128);
+  var imgN  = ctx.createImageData(128,128),
+      img1 = ctx.createImageData(128,128),
+      img8 = ctx.createImageData(128,128),
+      img16 = ctx.createImageData(128,128),
+      img64 = ctx.createImageData(128,128);
 
-  for (var x = 0, i=0; x < canvas.clientWidth; x++) {
-    for (var y = 0; y < canvas.clientHeight; y++) {
-      //var number = Math.round( Math.random() % 32768) * 255;
-      var number = Math.round(turbulence(x,y, 256)); // perlin noise (smooth)
-         ctx.fillStyle = "rgba(" + number+ "," + number + "," + number + "," + 1.0 + ")";
-         ctx.fillRect(x,y,1,1);
+  for (var x = 0, i=0; x < 128; x++) {
+    for (var y = 0; y < 128; y++) {
 
-         image.data[i] = image.data[i+1] = image.data[i+2] = number;
-         image.data[i+3] = 255;
+      var it1 = Math.round( Math.abs(noise.simplex2(x/64,y/64)) ) * 255,
+          it8 = Math.round(turbulence(x,y, 8)),
+          it16 = Math.round(turbulence(x,y, 16)),
+          it64 = Math.round(turbulence(x,y, 64)),
+          itN = Math.round(turbulence(x,y, 256));
+
+         img1.data[i] = img1.data[i+1] = img1.data[i+2] = it1;
+         img1.data[i+3] = 255;
+
+         img8.data[i] = img8.data[i+1] = img8.data[i+2] = it8;
+         img8.data[i+3] = 255;
+
+         img16.data[i] = img16.data[i+1] = img16.data[i+2] = it16;
+         img16.data[i+3] = 255;
+
+         img64.data[i] = img64.data[i+1] = img64.data[i+2] = it64;
+         img64.data[i+3] = 255;
+
+         imgN.data[i] = imgN.data[i+1] = imgN.data[i+2] = itN;
+         imgN.data[i+3] = 255;
+
           i+=4;
       }
   }
 
-ctx2.putImageData(image,0,0);
-console.log(canvas2.toDataURL());
+ctx.putImageData(img1,0,0);
+ctx.putImageData(img8,0,128);
+ctx.putImageData(img16,0,256);
+ctx.putImageData(img64,0,384);
+ctx.putImageData(imgN,0,384+128);
+//console.log(canvas2.toDataURL());
 
-document.getElementById("img").src = canvas2.toDataURL();
+//document.getElementById("img").src = canvas2.toDataURL();
 }
 
 function turbulence(x,y,isize){
@@ -57,7 +80,7 @@ var size = isize;
       value+= noise.simplex2(x/size, y/size) * size;
       size/=2;
   }
-  return ( 128 * value / isize);
+  return Math.abs(384 * value / isize);
 }
 
 

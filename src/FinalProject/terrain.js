@@ -27,7 +27,7 @@ function createWorld() {
     scene.add(viewpointLight);
 
     /*_________________________________Setting up Terrain_______________________________ */
-    plane = new THREE.PlaneGeometry( 70, 70, size-1, size-1 );
+    plane = new THREE.PlaneGeometry( 20, 20, size-1, size-1 );
 
   	material = new THREE.MeshBasicMaterial( { color: 'white',  side: THREE.DoubleSide, wireframe:false} );
 
