@@ -27,7 +27,7 @@ function createWorld() {
     scene.add(viewpointLight);
 
     /*_________________________________Setting up Terrain_______________________________ */
-    plane = new THREE.PlaneGeometry( 20, 20, size-1, size-1 );
+    plane = new THREE.PlaneGeometry( 40, 40, size-1, size-1 );
 
   	material = new THREE.MeshBasicMaterial( { color: 'white',  side: THREE.DoubleSide, wireframe:false} );
 
@@ -98,13 +98,18 @@ var image  = ctx.createImageData(128,128);
 imagecanvas.width = imagecanvas.height = 128;
 
  var rand = Math.random();
+ var dgrand = Math.random();
 for (var y=0, i=0, pxi=0; y < size; y++) {
   for (var x=0; x < size; x++, i++, pxi+=4) {
 
-    var value = turbulence(x*rand,y*rand, 256) ;
-     //value = (value > 1) ? 1:value;
-    terrain.geometry.vertices[i].z = 10.5* value;
+    var value = turbulence(x*rand,y*rand, 256);
+    //value = Math.pow(value,2); // uncomment to add exponential mountains curves
+    //value = Math.log2(value); // uncomment to add log2 mountain curves
+    value = (value <= 0.4) ? Math.pow(value,4):Math.sin(value);
 
+    value = THREE.Math.clamp(value,0,2.5);
+
+    terrain.geometry.vertices[i].z = 10.5* value;
     setTerrainTexturePixel(value, image, pxi);
 
   }
@@ -130,30 +135,61 @@ var size = isize;
   return ( 128 * value / isize);
 }
 
-function setTerrainTexturePixel(color, image, pxi){
-  color = Math.round(color * 255);
+function setTerrainTexturePixel(c,image, pxi){
+  let color = Math.round(c * 255);
+  let gradient = THREE.Math.clamp(c,0,1);
 
-  if(color <= 50){ // give DARKER grass color
-
-    image.data[pxi] = 10;
-    image.data[pxi+ 1] = 157;
-    image.data[pxi +2] = 200;
+  // if(color <= 50){ // give Water color
+  //
+  //   image.data[pxi] = 7;
+  //   image.data[pxi+ 1] = 72;
+  //   image.data[pxi +2] = 234;
+  // }
+  // else if( color >= 50 && color <= 100){ // give DARKER grass color
+  //
+  //   image.data[pxi] = 1 ;
+  //   image.data[pxi+ 1] = 33;
+  //   image.data[pxi +2] = 22;
+  // }
+  // else if(color > 100 && color <= 200){ // give grass color
+  //   image.data[pxi] = 3 ;
+  //   image.data[pxi+ 1] = 73;
+  //   image.data[pxi +2] = 52;
+  // }
+  // else if (color >200 && color <= 250){ // DIRTY snow
+  //   image.data[pxi] = 200 ;
+  //   image.data[pxi+ 1] = 200;
+  //   image.data[pxi +2] = 200;
+  // }
+  if(color <= 25){
+    image.data[pxi] = 16;
+    image.data[pxi+ 1] = 5;
+    image.data[pxi +2] = 143;
   }
-  else if( color >= 50 && color <= 100){ // give DARKER grass color
+  else if(color > 25 && color <= 50){ // give Water color
 
-    image.data[pxi] = 1;
-    image.data[pxi+ 1] = 33;
-    image.data[pxi +2] = 22;
+    image.data[pxi] = 7;
+    image.data[pxi+ 1] = 72;
+    image.data[pxi +2] = 234;
+  }
+  else if( color > 50 && color <= 100){ // give DARKER grass color
+
+     let r  = 1 * gradient, g = 33* gradient, b =  22* gradient;
+    image.data[pxi] = r;
+    image.data[pxi+ 1] = g;
+    image.data[pxi +2] = b;
   }
   else if(color > 100 && color <= 200){ // give grass color
-    image.data[pxi] = 3;
-    image.data[pxi+ 1] = 73;
-    image.data[pxi +2] = 52;
+    let r  = 3 * gradient, g = 73* gradient, b = 52* gradient;
+
+    image.data[pxi] = r;
+    image.data[pxi+ 1] = g;
+    image.data[pxi +2] = b;
   }
   else if (color >200 && color <= 250){ // DIRTY snow
-    image.data[pxi] = 200;
-    image.data[pxi+ 1] = 200;
-    image.data[pxi +2] = 200;
+    image.data[pxi] = 200 * gradient;
+    image.data[pxi+ 1] = 200* gradient;
+    image.data[pxi +2] = 200* gradient;
   }
   else{ // pure white snow
     image.data[pxi] = image.data[pxi+1] = image.data[pxi+2] = 255;
@@ -162,7 +198,6 @@ function setTerrainTexturePixel(color, image, pxi){
   image.data[pxi+3] = 255;
 
 }
-
 //----------------------------------------------------------------------------------
 
 /**
