@@ -38,7 +38,7 @@ function perlinNoise(canvas, ctx){
   for (var x = 0, i=0; x < 128; x++) {
     for (var y = 0; y < 128; y++) {
 
-      var it1 = Math.round( Math.abs(noise.simplex2(x/64,y/64)) ) * 255,
+      var it1 = Math.round( Math.abs(noise.perlin2(x/2,y/2)) ) * 255,
           it8 = Math.round(turbulence(x,y, 8)),
           it16 = Math.round(turbulence(x,y, 16)),
           it64 = Math.round(turbulence(x,y, 64)),
@@ -77,10 +77,10 @@ function turbulence(x,y,isize){
 var value = 0;
 var size = isize;
   while( size >= 1){
-      value+= noise.simplex2(x/size, y/size) * size;
+      value+= noise.perlin2(x/size, y/size) * size;
       size/=2;
   }
-  return Math.abs(384 * value / isize);
+  return Math.abs( 500 * value / isize);
 }
 
 

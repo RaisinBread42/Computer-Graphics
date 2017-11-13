@@ -105,7 +105,7 @@ for (var y=0, i=0, pxi=0; y < size; y++) {
     var value = turbulence(x*rand,y*rand, 256);
     //value = Math.pow(value,2); // uncomment to add exponential mountains curves
     //value = Math.log2(value); // uncomment to add log2 mountain curves
-    value = (value <= 0.4) ? Math.pow(value,4):Math.sin(value);
+    value = (value <= 0.4) ? Math.pow(value,4): (value > 0.4 && value <= 0.5) ? (0.5 - value):Math.sin(value);
 
     value = THREE.Math.clamp(value,0,2.5);
 
@@ -129,7 +129,7 @@ function turbulence(x,y,isize){
 var value = 0;
 var size = isize;
   while( size >= 1){
-      value+= Math.abs(noise.perlin2(x/size, y/size));
+      value+= Math.abs(noise.simplex2(x/size, y/size));
       size/=2;
   }
   return ( 128 * value / isize);
