@@ -40,6 +40,12 @@ function createWorld() {
 
 
 // DAT.GUI Related Stuff
+var TerrainFunctions = {
+  expPow: 1,
+  useExponential: false,
+  useSine: false,
+  piecewise: false
+};
 
 var gui = new dat.GUI();
 
@@ -47,8 +53,14 @@ var box = gui.addFolder('terrain');
 box.add(terrain.scale, 'x', 0, 3).name('Width').listen();
 box.add(terrain.scale, 'y', 0, 3).name('Height').listen();
 box.add(terrain.material, 'wireframe').listen();
+box.add(TerrainFunctions,'useExponential', 1, 5).name('Use Exponential').listen();
+box.add(TerrainFunctions,'expPow', 1, 5).name('Exp. Power').listen();
+box.add(TerrainFunctions,'useSine', 1, 5).name('Use Sine').listen();
 box.open();
 
+var PieceWiseFunctions = gui.addFolder('Piecewise Generation');
+PieceWiseFunctions.add( TerrainFunctions, 'piecewise').name('Use Piecewise').listen();
+PieceWiseFunctions.open();
 }
 
 
@@ -103,9 +115,9 @@ for (var y=0, i=0, pxi=0; y < size; y++) {
   for (var x=0; x < size; x++, i++, pxi+=4) {
 
     var value = turbulence(x*rand,y*rand, 256);
-    //value = Math.pow(value,2); // uncomment to add exponential mountains curves
+    //value = Math.pow(value,6); // uncomment to add exponential mountains curves
     //value = Math.log2(value); // uncomment to add log2 mountain curves
-    value = (value <= 0.4) ? Math.pow(value,4): (value > 0.4 && value <= 0.5) ? (0.5 - value):Math.sin(value);
+    //value = (value <= 0.4) ? Math.pow(value,4): (value > 0.4 && value <= 0.5) ? (0.5 - value):Math.sin(value);
 
     value = THREE.Math.clamp(value,0,2.5);
 
@@ -129,7 +141,7 @@ function turbulence(x,y,isize){
 var value = 0;
 var size = isize;
   while( size >= 1){
-      value+= Math.abs(noise.simplex2(x/size, y/size));
+      value+= Math.abs(noise.perlin2(x/size, y/size));
       size/=2;
   }
   return ( 128 * value / isize);
@@ -139,28 +151,6 @@ function setTerrainTexturePixel(c,image, pxi){
   let color = Math.round(c * 255);
   let gradient = THREE.Math.clamp(c,0,1);
 
-  // if(color <= 50){ // give Water color
-  //
-  //   image.data[pxi] = 7;
-  //   image.data[pxi+ 1] = 72;
-  //   image.data[pxi +2] = 234;
-  // }
-  // else if( color >= 50 && color <= 100){ // give DARKER grass color
-  //
-  //   image.data[pxi] = 1 ;
-  //   image.data[pxi+ 1] = 33;
-  //   image.data[pxi +2] = 22;
-  // }
-  // else if(color > 100 && color <= 200){ // give grass color
-  //   image.data[pxi] = 3 ;
-  //   image.data[pxi+ 1] = 73;
-  //   image.data[pxi +2] = 52;
-  // }
-  // else if (color >200 && color <= 250){ // DIRTY snow
-  //   image.data[pxi] = 200 ;
-  //   image.data[pxi+ 1] = 200;
-  //   image.data[pxi +2] = 200;
-  // }
   if(color <= 25){
     image.data[pxi] = 16;
     image.data[pxi+ 1] = 5;
