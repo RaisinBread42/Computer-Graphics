@@ -9,6 +9,19 @@ var continous = true;
 var stats;
 var material;
 var size=128;
+
+// DAT.GUI Related Stuff
+var TerrainFunctions = {
+  expPow: 1,
+  useExponential: false,
+  useSine: false,
+  piecewise: false,
+  piecewisebound: 0.5,
+  Generate: function(){
+      ApplyPerlinNoise();
+  }
+};
+
 function createWorld() {
 
     /*_________________________________Setting up scene lighting_______________________________ */
@@ -38,39 +51,35 @@ function createWorld() {
     terrain.rotation.x = -1;
     scene.add(terrain);
 
-
-// DAT.GUI Related Stuff
-var TerrainFunctions = {
-  expPow: 1,
-  useExponential: false,
-  useSine: false,
-  piecewise: false
-};
-
 var gui = new dat.GUI();
 
-var box = gui.addFolder('terrain');
+var box = gui.addFolder('Terrain scale');
 box.add(terrain.scale, 'x', 0, 3).name('Width').listen();
 box.add(terrain.scale, 'y', 0, 3).name('Height').listen();
 box.add(terrain.material, 'wireframe').listen();
-box.add(TerrainFunctions,'useExponential', 1, 5).name('Use Exponential').listen();
-box.add(TerrainFunctions,'expPow', 1, 5).name('Exp. Power').listen();
-box.add(TerrainFunctions,'useSine', 1, 5).name('Use Sine').listen();
-box.open();
+
+var expFolder = gui.addFolder('Exponential Func.');
+expFolder.add(TerrainFunctions,'useExponential', 1, 5).name('Use Exponential').listen();
+expFolder.add(TerrainFunctions,'expPow', 1, 5).name('Exp. Power').listen();
+
+var sineFolder = gui.addFolder('Sine Func.');
+sineFolder.add(TerrainFunctions,'useSine', 1, 5).name('Use Sine').listen();
 
 var PieceWiseFunctions = gui.addFolder('Piecewise Generation');
 PieceWiseFunctions.add( TerrainFunctions, 'piecewise').name('Use Piecewise').listen();
-PieceWiseFunctions.open();
+PieceWiseFunctions.add( TerrainFunctions, 'piecewisebound').name('Piecewise boundary').listen();
+
+gui.add(TerrainFunctions, 'Generate');
 }
 
 
 /*  Render the scene.  This is called for each frame of the animation.
  */
 function render() {
-    stats.begin();
+    //stats.begin();
     renderer.render(scene, camera);
     //terrain.rotation.z += 0.001;
-    stats.end();
+    //stats.end();
     requestAnimationFrame(render);
 
 }
@@ -91,7 +100,7 @@ function doKey(event) {
         // case 33:  terrain.rotation.z -= 0.07;    break;    // page up
         // case 34:  terrain.rotation.z += 0.07;    break;    // page down
         // case 36:  terrain.rotation.set(0.2,-0.4,0); break;    // home
-        case 80:  ApplyPerlinNoise(); break; // p button
+        //case 80:  ApplyPerlinNoise(); break; // p button
 
         default: rotated = false;
     }
@@ -107,7 +116,14 @@ function ApplyPerlinNoise(){
 var imagecanvas = document.getElementById('noiseimage');
 var ctx = imagecanvas.getContext('2d');
 var image  = ctx.createImageData(128,128);
+
+var blckimagecanvas = document.getElementById('blcknoiseimage');
+var blckctx = blckimagecanvas.getContext('2d');
+var blckimage = blckctx.createImageData(128,128);
+
 imagecanvas.width = imagecanvas.height = 128;
+blckimagecanvas.width = blckimagecanvas.height = 128;
+
 
  var rand = Math.random();
  var dgrand = Math.random();
@@ -115,23 +131,37 @@ for (var y=0, i=0, pxi=0; y < size; y++) {
   for (var x=0; x < size; x++, i++, pxi+=4) {
 
     var value = turbulence(x*rand,y*rand, 256);
-    //value = Math.pow(value,6); // uncomment to add exponential mountains curves
-    //value = Math.log2(value); // uncomment to add log2 mountain curves
-    //value = (value <= 0.4) ? Math.pow(value,4): (value > 0.4 && value <= 0.5) ? (0.5 - value):Math.sin(value);
+
+    if (TerrainFunctions.piecewise==false){
+        if(TerrainFunctions.useExponential == true){
+          value = Math.pow(value, parseInt(TerrainFunctions.expPow));
+        }
+        else{
+          value = (TerrainFunctions.useSine == true) ? Math.sin(value):value;
+        }
+    }
+    else{
+      let bound = TerrainFunctions.piecewisebound;
+      value = (value <= bound) ? Math.pow(value,TerrainFunctions.expPow):Math.sin(value);
+    }
 
     value = THREE.Math.clamp(value,0,2.5);
 
     terrain.geometry.vertices[i].z = 10.5* value;
     setTerrainTexturePixel(value, image, pxi);
+    setGrayscaleTerrainTexturePixel(value, blckimage, pxi);
 
   }
 ctx.putImageData(image,0,0);
+blckctx.putImageData(blckimage,0,0);
+console.log(blckimage);
 }
 
 var texture = new THREE.TextureLoader().load(imagecanvas.toDataURL(), function(texture){
   terrain.material.map = texture;
   terrain.material.needsUpdate = true;
 });
+
 //terrain.geometry.colorsNeedUpdate = true;
 terrain.geometry.__dirtyVertices = true;
 terrain.geometry.verticesNeedUpdate = true;
@@ -146,6 +176,13 @@ var size = isize;
   }
   return ( 128 * value / isize);
 }
+
+function setGrayscaleTerrainTexturePixel(c,image, pxi){
+  c = THREE.Math.clamp(c, 0,1);
+  image.data[pxi] = image.data[pxi+1] = image.data[pxi+2] = Math.round(c * 255);
+  image.data[pxi+3] = 255;
+}
+
 
 function setTerrainTexturePixel(c,image, pxi){
   let color = Math.round(c * 255);
@@ -195,9 +232,9 @@ function setTerrainTexturePixel(c,image, pxi){
  */
 function init() {
 
-      stats = new Stats();
-      stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-      document.getElementById("stats").appendChild( stats.domElement );
+      //stats = new Stats();
+      //stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+      //document.getElementById("stats").appendChild( stats.domElement );
 
     try {
         canvas = document.getElementById("glcanvas");
