@@ -8,7 +8,9 @@ var plane;
 var continous = true;
 var stats;
 var material;
-var size=128;
+var size=64;
+var MAX_POINTS = size*size;
+var drawCount=0;
 
 // DAT.GUI Related Stuff
 var TerrainFunctions = {
@@ -40,24 +42,45 @@ function createWorld() {
     scene.add(viewpointLight);
 
     /*_________________________________Setting up Terrain_______________________________ */
-    plane = new THREE.PlaneGeometry( 40, 40, size-1, size-1 );
+
+
+    let points = new Float32Array( size*size * 3 ); // 3 vertices per point
+
+    // let THREEjs create default terrain vertice points for us and assign to buffer object
+    let tempverts = new THREE.PlaneGeometry( 40, 40, size, size );
+    let verts = new Array();
+    let i=0;
+    while( i < MAX_POINTS){
+      verts.push( tempverts.vertices[i].x,  tempverts.vertices[i].y,  tempverts.vertices[i].z);
+      i++;
+    }
+
+
+    plane = new THREE.BufferGeometry();
+    plane.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(verts), 3 ) );
+
+    // drawcalls
+  	drawCount = MAX_POINTS;
+  	plane.setDrawRange( 0, drawCount);
+
 
   	material = new THREE.MeshBasicMaterial( { color: 'white',  side: THREE.DoubleSide, wireframe:false} );
 
-    plane.computeFaceNormals();
-    terrain = new THREE.Mesh( plane, material );
-    terrain.dynamic = true;
-    terrain.position.z = -10;
-    terrain.rotation.x = -1;
-    terrain.scale.x = terrain.scale.y = 1;
+    // plane.computeFaceNormals();
+     terrain = new THREE.Mesh( plane, material );
+    // terrain.dynamic = true;
+     terrain.position.z = -10;
+     //terrain.scale.x = terrain.scale.y = 3;
+    // terrain.rotation.x = -1;
+
     scene.add(terrain);
 
 var gui = new dat.GUI();
 
-//var box = gui.addFolder('Terrain scale');
-// box.add(terrain.scale, 'x', 0, 3).name('Width').listen();
-// box.add(terrain.scale, 'y', 0, 3).name('Height').listen();
-//box.add(terrain.material, 'wireframe').listen();
+var box = gui.addFolder('Terrain scale');
+box.add(terrain.scale, 'x', 0, 3).name('Width').listen();
+box.add(terrain.scale, 'y', 0, 3).name('Height').listen();
+box.add(terrain.material, 'wireframe').listen();
 
 var expFolder = gui.addFolder('Exponential Func.');
 expFolder.add(TerrainFunctions,'useExponential', 1, 5).name('Use Exponential').listen();
@@ -79,7 +102,7 @@ gui.add(TerrainFunctions, 'Generate');
 function render() {
     //stats.begin();
     renderer.render(scene, camera);
-    terrain.rotation.z += 0.001;
+    //terrain.rotation.z += 0.001;
     //stats.end();
     requestAnimationFrame(render);
 
@@ -96,8 +119,8 @@ function doKey(event) {
     switch( code ) {
         case 37:  terrain.rotation.z -= 0.07;    break;    // left arrow
         case 39:  terrain.rotation.z += 0.07;    break;    // right arrow
-        // case 38:  terrain.rotation.x -= 0.07;    break;    // up arrow
-        // case 40:  terrain.rotation.x += 0.07;    break;    // down arrow
+         case 38:  terrain.rotation.x -= 0.07;    break;    // up arrow
+         case 40:  terrain.rotation.x += 0.07;    break;    // down arrow
         // case 33:  terrain.rotation.z -= 0.07;    break;    // page up
         // case 34:  terrain.rotation.z += 0.07;    break;    // page down
         // case 36:  terrain.rotation.set(0.2,-0.4,0); break;    // home
@@ -109,14 +132,6 @@ function doKey(event) {
         event.preventDefault();  // Prevent keys from scrolling the page.
         render();
     }
-}
-
-function mousewheel(e){
-  var d = ((typeof e.wheelDelta != "undefined") ? (-e.wheelDelta) : e.detail);
-   d = 40*((d>0)? 0.01:-0.01);
-
-   camera.fov += d;
-   camera.updateProjectionMatrix();
 }
 
 function ApplyPerlinNoise(){
@@ -136,6 +151,9 @@ blckimagecanvas.width = blckimagecanvas.height = size;
 
  var rand = Math.random();
  var dgrand = Math.random();
+ let position = terrain.geometry.attributes.position.array;
+  var index = -1;
+
 for (var y=0, i=0, pxi=0; y < size; y++) {
   for (var x=0; x < size; x++, i++, pxi+=4) {
 
@@ -156,14 +174,16 @@ for (var y=0, i=0, pxi=0; y < size; y++) {
 
     value = THREE.Math.clamp(value,0,2.5);
 
-    terrain.geometry.vertices[i].z = 10.5* value;
+
+    //terrain.geometry.vertices[i].z = 10.5* value;
+    position[index+=3] =  10.5 * value; // z pos of current vertex
     setTerrainTexturePixel(value, image, pxi);
     setGrayscaleTerrainTexturePixel(value, blckimage, pxi);
-
   }
+
 ctx.putImageData(image,0,0);
 blckctx.putImageData(blckimage,0,0);
-console.log(blckimage);
+
 }
 
 var texture = new THREE.TextureLoader().load(imagecanvas.toDataURL(), function(texture){
@@ -172,6 +192,7 @@ var texture = new THREE.TextureLoader().load(imagecanvas.toDataURL(), function(t
 });
 
 //terrain.geometry.colorsNeedUpdate = true;
+terrain.geometry.attributes.position.needsUpdate = true;
 terrain.geometry.__dirtyVertices = true;
 terrain.geometry.verticesNeedUpdate = true;
 }
@@ -258,9 +279,6 @@ function init() {
         return;
     }
     document.addEventListener("keydown", doKey, false);
-    document.body.addEventListener( 'mousewheel', mousewheel, false );
-    document.body.addEventListener( 'DOMMouseScroll', mousewheel, false ); // firefox
-
     createWorld();
     render();
 }
