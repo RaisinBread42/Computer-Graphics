@@ -79,7 +79,7 @@ gui.add(TerrainFunctions, 'Generate');
 function render() {
     //stats.begin();
     renderer.render(scene, camera);
-    terrain.rotation.z += 0.001;
+    //terrain.rotation.z += 0.001;
     //stats.end();
     requestAnimationFrame(render);
 
@@ -193,46 +193,44 @@ function setGrayscaleTerrainTexturePixel(c,image, pxi){
 }
 
 
-function setTerrainTexturePixel(c,image, pxi){
-  let color = Math.round(c * 255);
-  let gradient = THREE.Math.clamp(c,0,1);
+function setTerrainTexturePixel(p,image, pxi){
+  let height = Math.round(p * 255);
+  let gradient = THREE.Math.clamp(p,0,1);
 
-  if(color <= 25){
-    image.data[pxi] = 16;
-    image.data[pxi+ 1] = 5;
-    image.data[pxi +2] = 143;
-  }
-  else if(color > 25 && color <= 50){ // give Water color
-
-    image.data[pxi] = 7;
-    image.data[pxi+ 1] = 72;
-    image.data[pxi +2] = 234;
-  }
-  else if( color > 50 && color <= 100){ // give DARKER grass color
-
-     let r  = 1 * gradient, g = 33* gradient, b =  22* gradient;
+  if(height <= 25){
+    let r  = 16, g = 5, b = 143;
     image.data[pxi] = r;
     image.data[pxi+ 1] = g;
     image.data[pxi +2] = b;
   }
-  else if(color > 100 && color <= 200){ // give grass color
-    let r  = 3 * gradient, g = 73* gradient, b = 52* gradient;
-
+  else if(height > 25 && height <= 50){ // give Water color
+    let r  = 7, g = 72, b = 234;
     image.data[pxi] = r;
     image.data[pxi+ 1] = g;
     image.data[pxi +2] = b;
   }
-  else if (color >200 && color <= 250){ // DIRTY snow
-    image.data[pxi] = 200 * gradient;
-    image.data[pxi+ 1] = 200* gradient;
-    image.data[pxi +2] = 200* gradient;
+  else if( height > 50 && height <= 100){ // give DARK grass color
+    let r  = 1 * gradient, g = 33 * gradient, b =  22 * gradient;
+    image.data[pxi] = r;
+    image.data[pxi+ 1] = g;
+    image.data[pxi +2] = b;
+  }
+  else if(height > 100 && height <= 200){ // give grass color
+    let r  = 3 * gradient, g = 73 * gradient, b = 52 * gradient;
+    image.data[pxi] = r;
+    image.data[pxi+ 1] = g;
+    image.data[pxi +2] = b;
+  }
+  else if (height >200 && height <= 250){ // DIRTY snow
+    let r = 200 * gradient, g = 200 * gradient, b = 200 * gradient;
+    image.data[pxi] = r;
+    image.data[pxi+ 1] = g;
+    image.data[pxi +2] = b;
   }
   else{ // pure white snow
     image.data[pxi] = image.data[pxi+1] = image.data[pxi+2] = 255;
   }
-
   image.data[pxi+3] = 255;
-
 }
 //----------------------------------------------------------------------------------
 
