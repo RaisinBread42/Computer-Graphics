@@ -2,9 +2,16 @@
 <html>
 <title> Final Project </title>
 <body onload="loadImage()">
-  <canvas id="canvas" width="600px" height="1600px"></canvas>
-  <canvas id="imagecanvas" ></canvas>
+  <canvas id="canvas" width="600px" height="700px"></canvas>
 
+<p>
+  1st image represents simple perlin noise used to generate black and white image. <br/>
+  2nd image shows applying turbulence with initial zoom of 8.<br/>
+  3rd image is likewise but with initial zoom of 16. <br/>
+  4th image is likewise but with initial zoom of 64. <br/>
+  5th image is likewise but with initial zoom of 256. <br/>
+
+</p>
 <!-- <img id="img" alt="dynamic image" /> -->
 
 <script src="perlin.js"> </script>
@@ -12,14 +19,10 @@
 
 function loadImage(){
 var canvas = document.getElementById('canvas');
-var canvas2 = document.getElementById('imagecanvas');
 
 var ctx = canvas.getContext('2d');
-var ctx2 = canvas2.getContext('2d');
 
 canvas.clientWidth = canvas.clientHeight = 600;
-ctx2.width = ctx2.height = 128;
-
 
 noise.seed(Math.random());
 
