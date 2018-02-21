@@ -1,4 +1,4 @@
-# Computer Graphics Undergraduate Course
+# Computer Graphics Undergraduate Course (Final Project)
 
 
 My final project submitted for this course. In short, I used Perlin noise to generate 2D images, then applied the same concept to generating Terrains along with color coding a texture map, using Three.js.
